@@ -1,5 +1,4 @@
 const express = require('express');
-const res = require('express/lib/response');
 const connectaccount = require('./databases/Account');
 const connectrequest = require('./databases/Requestbed');
 const app = express();
