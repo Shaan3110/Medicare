@@ -1,4 +1,5 @@
 const express = require('express');
+const res = require('express/lib/response');
 const connectaccount = require('./databases/Account');
 const connectrequest = require('./databases/Requestbed');
 const app = express();
@@ -10,7 +11,10 @@ const port = process.env.port || 3001
 connectrequest();
 
 //Routes
-app.use('/auth/',require('./routes/Account.js'))
+// app.use('/auth/',require('./routes/Account.js'))
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
 
 //server listening 
