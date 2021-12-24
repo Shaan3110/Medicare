@@ -10,10 +10,10 @@ const port = process.env.PORT || 3001
 connectrequest();
 
 //Routes
-// app.use('/auth/',require('./routes/Account.js'))
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use('/auth/',require('./routes/Account.js'))
+// app.get('/', (req, res) => {
+//   res.send('Hello World!')
+// })
 
 
 //server listening 
