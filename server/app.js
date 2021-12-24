@@ -4,7 +4,7 @@ const connectrequest = require('./databases/Requestbed');
 const app = express();
 
 //port
-const port = 3001
+const port = process.env.port || 3001
 
 // connectaccount();
 connectrequest();
