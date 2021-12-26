@@ -6,9 +6,12 @@ const app = express();
 //port
 const port = process.env.PORT || 3001
 
-// connectaccount();
-connectrequest();
+connectaccount();
+// connectrequest();
 
+
+//middleware for json req
+app.use(express.json())
 //Routes
 app.use('/auth/',require('./routes/Account.js'))
 // app.get('/', (req, res) => {
