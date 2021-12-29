@@ -9,7 +9,11 @@ const tokengen = require('../token/Gentoken')
 
 const router = express.Router();
 
-router.post('/login',
+
+
+
+//register route
+router.post('/register',
 
   //this will return invalid email and password in case of not valid formats which we got with the package express-validator
   [
@@ -79,5 +83,91 @@ router.post('/login',
       });
     }
   })
+
+
+
+
+
+
+
+  //login route
+  router.post('/login',
+
+  //this will return invalid email and password in case of not valid formats which we got with the package express-validator
+  [
+    body('email', 'Invalid email').isEmail(),
+    body('password', 'Password cannot be blank').exists()
+  ],
+
+
+  //validating the email and password 
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array()
+      });
+    }
+
+
+    //checking if the email exists in the database and if yes then checking if the password is correct
+    try {
+
+
+      //destructuring email and password from the req body
+      const {email,password}=req.body;
+
+
+      //checking if the email is there on the database
+      let user = await User.findOne({email});
+
+      //if there is no account registered to this email then returning the error to the server with status 400
+      if(!user)
+      {
+         return res.status(400).json({
+          "errors": [{
+            "value": email,
+            "msg": "Please check your email id or password",
+            "param": "email",
+            "location": "body"
+          }]
+        })
+      }
+
+      //comparing the hashes of the users password with the database using the bcrypth compare method
+      const comparepass=await bcrypt.compare(password,user.password);
+
+      //if the password is wrong then sending error to the client with 400 status code
+      if(!comparepass)
+      {
+        return res.status(400).json({
+          "errors": [{
+            "value": password,
+            "msg": "Please check your email id or password",
+            "param": "email",
+            "location": "body"
+          }]
+        })
+      }
+      //module returns the token in normal form which we will send to the user in json format
+      const token=tokengen(user.id);
+      //sending authentication token to the user
+
+
+      res.json({token})
+
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({
+        "errors": [{
+          "value": req.body.email,
+          "msg": "Sorry for the inconvinience some internal server error occurred",
+          "param": "email",
+          "location": "body"
+        }]
+      });
+    }
+  })
+
 
 module.exports = router;
