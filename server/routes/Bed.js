@@ -20,8 +20,17 @@ router.get('/user/showtickets',
         try {
 
             //find command returns all the rows of the database
-            const ticket=await Bed.find();
-            res.send(ticket);
+            let ticket;
+            if(req.hospital)
+            {
+                ticket=await Bed.find({hospital:req.hospital.id});
+                res.send(ticket);
+            }
+            if(req.user)
+            {
+                ticket=await Bed.find({user:req.user.id});
+                res.send(ticket);
+            }
             
         } catch (error) {
             console.log(error.message);

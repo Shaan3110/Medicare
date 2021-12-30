@@ -27,7 +27,14 @@ async function Userdata(req,res,next){
 
         //if the verification is successful then we are setting the user to the req which we can use to get the id as on generation the token
         //we used then user:{data:{id:id}} would be on the req and we can directly access the id out of it
-        req.user=data.user;
+        if(data.user)
+        {
+          req.user=data.user;
+        }
+        if(data.hospital)
+        {
+          req.hospital=data.hospital;
+        }
 
         //calls the next function after no error occurred
         next();
