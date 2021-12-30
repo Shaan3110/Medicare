@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs');
 
 //all module imports
 const User = require('../models/Account');
-const tokengen = require('../token/Gentoken')
+const tokengen = require('../token/Gentoken');
+const Userdata= require('../mIddleware/Userdata');
 
 const router = express.Router();
 
@@ -75,10 +76,10 @@ router.post('/register',
       console.log(error.message);
       res.status(500).json({
         "errors": [{
-          "value": req.body.email,
+          "value": "no-value",
           "msg": "Sorry for the inconvinience some internal server error occurred",
-          "param": "email",
-          "location": "body"
+          "param": "no-param",
+          "location": "server"
         }]
       });
     }
@@ -118,8 +119,9 @@ router.post('/register',
       const {email,password}=req.body;
 
 
-      //checking if the email is there on the database
+      //checking if the email is there on the database and storing it on variable user
       let user = await User.findOne({email});
+
 
       //if there is no account registered to this email then returning the error to the server with status 400
       if(!user)
@@ -160,14 +162,51 @@ router.post('/register',
       console.log(error.message);
       res.status(500).json({
         "errors": [{
-          "value": req.body.email,
+          "value": "no-value",
           "msg": "Sorry for the inconvinience some internal server error occurred",
-          "param": "email",
-          "location": "body"
+          "param": "no-param",
+          "location": "server"
         }]
       });
     }
   })
+
+
+
+
+
+
+  //account details route
+  router.post('/account',
+
+  //middleware adding to fetch details of the user with the token
+  Userdata,
+  //validating the email and password 
+  async (req, res) => {
+    try {
+      userId=req.user.id;
+
+      //select -password don't share the password into the parameter
+      //here we can also use findOne({id:userId}).select("-password") which would return the same response
+      const details=await User.findById(userId).select("-password");
+
+      //sharing the row as the response
+      res.send(details);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({
+        "errors": [{
+          "value": "no-value",
+          "msg": "Sorry for the inconvinience some internal server error occurred",
+          "param": "no-param",
+          "location": "server"
+        }]
+      });
+    }
+  })
+
+
+
 
 
 module.exports = router;

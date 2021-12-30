@@ -1,13 +1,14 @@
 const express = require('express');
 const connectaccount = require('./databases/Account');
-const connectrequest = require('./databases/Requestbed');
+const connecthospital = require('./databases/Hospital');
 const app = express();
 
 //port
 const port = process.env.PORT || 5000
 
-connectaccount();
-// connectrequest();
+// connectaccount();
+connecthospital();
+
 
 
 //middleware for json req
