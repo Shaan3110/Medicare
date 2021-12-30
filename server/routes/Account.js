@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 //all module imports
 const User = require('../models/Account');
 const tokengen = require('../token/Gentoken');
+
+//middleware for token
 const Userdata= require('../mIddleware/Userdata');
 
 const router = express.Router();
