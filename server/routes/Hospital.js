@@ -10,7 +10,6 @@ const bcrypt = require('bcryptjs');
 const Hospital = require('../models/Hospital');
 const tokengen = require('../token/GentokenHospital');
 
-//middleware for token
 // const Userdata= require('../mIddleware/Userdata');
 
 const router = express.Router();

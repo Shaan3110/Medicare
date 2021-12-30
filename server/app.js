@@ -21,6 +21,7 @@ app.use('/auth/',require('./routes/Account.js'))
 //   res.send('Hello World!')
 // })
 app.use('/hospitals/',require('./routes/Hospital.js'))
+app.use('/beds/',require('./routes/Bed.js'))
 
 
 //server listening 
