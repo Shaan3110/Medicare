@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 //all module imports
 const User = require('../models/Account');
-const tokengen = require('../token/Gentoken');
+const tokengen = require('../token/GentokenUser');
 
 //middleware for token
 const Userdata= require('../mIddleware/Userdata');

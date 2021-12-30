@@ -1,6 +1,6 @@
 //jsonwebtoken(jwt) is used to generate a token for the user on register or login and verification of it it consists of 3 parts written on documentation
 const jwt = require('jsonwebtoken');
-const JWT_SECRET="trialsecretkey"
+const JWT_SECRET_USER="trialsecretkey"
 
 
 async function Userdata(req,res,next){
@@ -23,7 +23,7 @@ async function Userdata(req,res,next){
 
     //verifying if the token is correct with the jwt verify function using the secret key and token of the user 
     try {
-        const data=await jwt.verify(token,JWT_SECRET);
+        const data=await jwt.verify(token,JWT_SECRET_USER);
 
         //if the verification is successful then we are setting the user to the req which we can use to get the id as on generation the token
         //we used then user:{data:{id:id}} would be on the req and we can directly access the id out of it

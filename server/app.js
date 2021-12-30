@@ -1,5 +1,6 @@
 const express = require('express');
 const connectaccount = require('./databases/Account');
+const connectbeds = require('./databases/Beds');
 const connecthospital = require('./databases/Hospital');
 const app = express();
 
@@ -8,6 +9,7 @@ const port = process.env.PORT || 5000
 
 // connectaccount();
 connecthospital();
+// connectbeds();
 
 
 

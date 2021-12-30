@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 //all module imports
 const Hospital = require('../models/Hospital');
-const tokengen = require('../token/Gentoken');
+const tokengen = require('../token/GentokenHospital');
 
 //middleware for token
 // const Userdata= require('../mIddleware/Userdata');
