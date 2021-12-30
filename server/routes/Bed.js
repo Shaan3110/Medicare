@@ -5,7 +5,7 @@ const Bed = require('../models/Bed');
 
 
 //middleware for token
-const Userdata= require('../mIddleware/Userdata');
+const Userdata= require('../middleware/Userdata');
 
 
 const router = express.Router();
@@ -14,10 +14,26 @@ const router = express.Router();
 
 
 //all beds showing route
-router.get('/showtickets',
+router.get('/user/showtickets',
+    Userdata,
     async (req, res) => {
-        const ticket=await Bed.find();
-        res.send(ticket);
+        try {
+
+            //find command returns all the rows of the database
+            const ticket=await Bed.find();
+            res.send(ticket);
+            
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                "errors": [{
+                "value": "no-value",
+                "msg": "Sorry for the inconvinience some internal server error occurred",
+                "param": "no-param",
+                "location": "server"
+                }]
+            });
+        }
     });
 
 
@@ -29,8 +45,22 @@ router.post('/addticket/:hid',
     Userdata,
     async (req, res) => {
         try {
-            console.log(req.user.id);
-            console.log(req.params.hid)
+
+
+            //creating a new record with user id , hospital id and approve
+            //another way to create a data other than the create function used in Account
+            const bed=new Bed({
+                user:req.user.id,
+                hospital:req.params.hid,
+                approve:false,
+                //date is save in unix timestamp so that it can be changed to local time and showed how many days earlier the request is being
+                //made using the moment.js
+                date: Math.floor((new Date()).getTime() / 1000)
+            })
+
+            //saves the data on the database 
+            const details=await bed.save();
+            res.json(details);
         } catch (error) {
             console.log(error.message);
             res.status(500).json({

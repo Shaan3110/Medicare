@@ -8,7 +8,7 @@ const User = require('../models/Account');
 const tokengen = require('../token/GentokenUser');
 
 //middleware for token
-const Userdata= require('../mIddleware/Userdata');
+const Userdata= require('../middleware/Userdata');
 
 const router = express.Router();
 

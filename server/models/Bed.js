@@ -15,8 +15,7 @@ const accountmodel = new Schema({
         required: true
     },
     date:{
-        type: Date,
-        default: Date.now
+        type: Number
     }
 });
 

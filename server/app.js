@@ -1,15 +1,11 @@
 const express = require('express');
-const connectaccount = require('./databases/Account');
-const connectbeds = require('./databases/Beds');
-const connecthospital = require('./databases/Hospital');
+const connecttomongo = require('./databases/Database');
 const app = express();
 
 //port
 const port = process.env.PORT || 5000
 
-// connectaccount();
-connecthospital();
-// connectbeds();
+connecttomongo();
 
 
 
