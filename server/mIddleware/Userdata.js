@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET="trialsecretkey"
 
 
-async function Userdata(req,res,next){
+async function Userdata(req,res,next){ 
 
     //the token is sent from the user in the request header with the title auth-token
     token=req.header('auth-token');
