@@ -311,6 +311,66 @@ router.post('/auth/login',
             });
         }
     })
+    
+
+
+
+    
+    //hospital data
+    //for users to search for beds and book a bed for them
+    //made a separate route as beds would be changing frequently and hospital should be able to update beds on their console itself without
+    //changing other details
+    router.post('/update/beds',
+    Userdata,
+    async (req, res) => {
+        try {
+            //destructuring the contact and location from body 
+            const {beds} = req.body;
+            if(req.hospital)
+            {
+                let hospital = await Hospital.findById(req.hospital.id);
+                if(!hospital)
+                {
+                    return res.status(500).json({
+                        "errors": [{
+                            "value": "no-value",
+                            "msg": "Sorry for the inconvinience some internal server error occurred",
+                            "param": "no-param",
+                            "location": "server"
+                        }]
+                    });
+                }
+                else
+                {
+                    let updatedHospital= {};
+                    updatedHospital.beds=beds;
+                    hospital= await Hospital.findByIdAndUpdate(req.hospital.id,{$set:updatedHospital},{new:true});
+                    res.status(200).send(hospital);
+                }
+            }
+            else
+            {
+                return res.status(401).json({
+                    "errors": [{
+                        "value": "no-value",
+                        "msg": "Your session has expired",
+                        "param": "no-param",
+                        "location": "server"
+                    }]
+                });
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                "errors": [{
+                    "value": "no-value",
+                    "msg": "Sorry for the inconvinience some internal server error occurred",
+                    "param": "no-param",
+                    "location": "server"
+                }]
+            });
+        }
+    })
 
 
 //exporting the router
