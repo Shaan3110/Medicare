@@ -13,11 +13,9 @@ connecttomongo();
 app.use(express.json())
 //Routes
 app.use('/auth/',require('./routes/Account.js'))
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
 app.use('/hospitals/',require('./routes/Hospital.js'))
 app.use('/beds/',require('./routes/Bed.js'))
+
 
 
 //server listening 
