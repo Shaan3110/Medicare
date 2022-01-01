@@ -10,6 +10,7 @@ const Userdata= require('../middleware/Userdata');
 const router = express.Router();
 
 
+
 //all beds showing route which are approved by the hospital for the user and same on the hospital side more as a history
 router.get('/showtickets/approved',
     Userdata,
@@ -21,15 +22,17 @@ router.get('/showtickets/approved',
 
             //checking if req has hospital or user as the object based on that the search is being made. The user or hospital should be able to
             //see their corresponding tickets only and the token is dcrypted and used that data for showing the result
+            //checking for approve to be true for showing all approved token only
             if(req.hospital)
             {
-                ticket=await Bed.find({hospital:req.hospital.id});
-                res.json(ticket);
+                ticket=await Bed.find({hospital:req.hospital.id,approve:true});
+                res.json({"Token type":"Hospital",ticket:ticket});
             }
+            //searching for the bed for the user with it's id
             if(req.user)
             {
-                ticket=await Bed.find({user:req.user.id});
-                res.send(ticket);
+                ticket=await Bed.find({user:req.user.id,approve:true});
+                res.send({"Token type":"User",ticket:ticket});
             }
             
         } catch (error) {
@@ -45,6 +48,48 @@ router.get('/showtickets/approved',
         }
     });
 
+
+
+
+
+
+//all beds requests showed to users and hospitals , for users it would show the current status of the bed and for hospital they can approve it 
+//also 
+router.get('/showtickets/requests',
+    Userdata,
+    async (req, res) => {
+        try {
+
+            //find command returns all the rows of the database
+            let ticket;
+
+            //checking if req has hospital or user as the object based on that the search is being made. The user or hospital should be able to
+            //see their corresponding tickets only and the token is dcrypted and used that data for showing the result
+            //applying approve to be false for all the requests only
+            if(req.hospital)
+            {
+                ticket=await Bed.find({hospital:req.hospital.id,approve:false});
+                res.json({"Token type":"Hospital",ticket:ticket});
+            }
+            //searching for the bed for the user with it's id and approve to be false
+            if(req.user)
+            {
+                ticket=await Bed.find({user:req.user.id,approve:false});
+                res.send({"Token type":"User",ticket:ticket});
+            }
+            
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                "errors": [{
+                "value": "no-value",
+                "msg": "Sorry for the inconvinience some internal server error occurred",
+                "param": "no-param",
+                "location": "server"
+                }]
+            });
+        }
+    });
 
 
 
@@ -179,12 +224,12 @@ router.post('/approve/:bid',
                     res.status(200).send(bed);
                 }
 
-                
+
                 //else if the actio is false then delete the bed request
                 else if(action===false)
                 {
-                    bed=await Bed.findByIdAndDelete()
-                    res.status(200).send(bed);
+                    bed=await Bed.findByIdAndDelete(req.params.bid)
+                    res.status(200).json({"Success":"Bed has been deleted",bed:bed});
                 }
             }
             else

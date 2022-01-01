@@ -10,6 +10,9 @@ const bcrypt = require('bcryptjs');
 const Hospital = require('../models/Hospital');
 const tokengen = require('../token/GentokenHospital');
 
+//middleware for token
+const Userdata= require('../middleware/Userdata')
+
 // const Userdata= require('../mIddleware/Userdata');
 
 const router = express.Router();
@@ -194,11 +197,121 @@ router.post('/auth/login',
     })
 
 
-    //hospital data
-    router.get('/',
+
+
+
+    //hospital data route
+    //for users to search for beds and book a bed for them
+    router.get('/search',
+    Userdata,
     async (req, res) => {
-        const details=await Hospital.find().select("-password")
-        res.send(details)
+
+        //checking if the request was from a user or not
+        //in case the request was not from a user then deny the request for hospitals
+        try {
+            
+        if(req.user)
+        {
+            const details=await Hospital.find().select("-password")
+            res.send(details)
+        }
+        else
+        {
+            res.status(401).json({
+                "errors": [{
+                    "value": "no-value",
+                    "msg": "Sorry for the inconvinience some internal server error occurred",
+                    "param": "no-param",
+                    "location": "server"
+                }]
+            });
+        }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                "errors": [{
+                    "value": "no-value",
+                    "msg": "Sorry for the inconvinience some internal server error occurred",
+                    "param": "no-param",
+                    "location": "server"
+                }]
+            });  
+        }
+    })
+    
+
+
+
+    
+    //hospital data
+    //for users to search for beds and book a bed for them
+    router.post('/update',
+    Userdata,
+    async (req, res) => {
+        try {
+            //destructuring the contact and location from body 
+            const {name,contact,location} = req.body;
+
+            //checking if the contact and location is of length less than 9 and contact changed to string first for length function
+            if(contact.toString().length< 9 || location.length< 9)
+            {
+                return res.status(400).json({
+                    "errors": [{
+                        "value": "no-value",
+                        "msg": "Invalid contact or location",
+                        "param": "no-param",
+                        "location": "server"
+                    }]
+                });
+            }
+            if(req.hospital)
+            {
+                let hospital = await Hospital.findById(req.hospital.id);
+                if(!hospital)
+                {
+                    return res.status(500).json({
+                        "errors": [{
+                            "value": "no-value",
+                            "msg": "Sorry for the inconvinience some internal server error occurred",
+                            "param": "no-param",
+                            "location": "server"
+                        }]
+                    });
+                }
+                else
+                {
+                    let updatedHospital= {};
+                    updatedHospital.contact=contact;
+                    updatedHospital.location=location;
+                    updatedHospital.name=name;
+                    hospital= await Hospital.findByIdAndUpdate(req.hospital.id,{$set:updatedHospital},{new:true});
+                    res.status(200).send(hospital);
+                }
+            }
+            else
+            {
+                return res.status(401).json({
+                    "errors": [{
+                        "value": "no-value",
+                        "msg": "Your session has expired",
+                        "param": "no-param",
+                        "location": "server"
+                    }]
+                });
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                "errors": [{
+                    "value": "no-value",
+                    "msg": "Sorry for the inconvinience some internal server error occurred",
+                    "param": "no-param",
+                    "location": "server"
+                }]
+            });
+        }
     })
 
+
+//exporting the router
 module.exports = router;
