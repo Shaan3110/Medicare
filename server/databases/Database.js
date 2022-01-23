@@ -1,8 +1,10 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const mongoose=require('mongoose');
 
 
 //database address
-const dbaddress='mongodb+srv://mediocareteam:mediocareteam@cluster0.6dm6o.mongodb.net/Mediocare?retryWrites=true&w=majority';
+const dbaddress=process.env.MONGODB_URL;
 
 //connection
 const connectaccount = () =>{
